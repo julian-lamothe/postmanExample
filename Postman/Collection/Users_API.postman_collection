@@ -1,0 +1,419 @@
+{
+	"info": {
+		"_postman_id": "e6cc4bab-6009-4e27-947d-34ea87fae050",
+		"name": "Users_API_Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49380842",
+		"_collection_link": "https://julian-lamothe-4692931.postman.co/workspace/julian's-Workspace~d2e8a337-f148-40e9-882f-560585e6fd52/collection/49380842-e6cc4bab-6009-4e27-947d-34ea87fae050?action=share&source=collection_link&creator=49380842"
+	},
+	"item": [
+		{
+			"name": "LogIn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const json = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Token present\", () => {\r",
+							"    pm.expect(json).to.have.property(\"token\");\r",
+							"});\r",
+							"\r",
+							"if (json.token) {\r",
+							"    pm.environment.set(\"token\", json.token);\r",
+							"    console.log(\"Token save:\", json.token);\r",
+							"} else {\r",
+							"    console.log(\"token not found\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"{{valid_email}}\",\r\n  \"password\": \"{{valid_password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvalidLogInNoApiKey",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 401\", () => pm.response.to.have.status(401));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " {{token}}"
+					},
+					{
+						"key": "x-api-key",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/users/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				},
+				"description": "Generated from cURL: curl --location '{{base_url}}/api/users/2' \\\r\n--header 'Authorization: Bearer invalid_token'"
+			},
+			"response": []
+		},
+		{
+			"name": "InsertUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 201\", () => pm.response.to.have.status(201));\r",
+							"const json = pm.response.json();\r",
+							"pm.test(\"User created with ID\", () => pm.expect(json).to.have.property(\"id\"));\r",
+							"pm.test(\"createdAt timestamp\", () => pm.expect(json).to.have.property(\"createdAt\"));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": " {{token}}"
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Julian Lamothe\",\r\n    \"job\": \"QA Tester\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				},
+				"description": "Generated from cURL: curl --location '{{base_url}}/api/users' \\\r\n--header 'Content-Type: application/json' \\\r\n--header 'Authorization: Bearer {{token}}' \\\r\n--data '{\r\n    \"name\": \"Julian Lamothe\",\r\n    \"job\": \"QA Tester\"\r\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "GetUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"const json = pm.response.json();\r",
+							"pm.test(\"Response with data object\", () => pm.expect(json).to.have.property(\"data\"));\r",
+							"pm.test(\"Email exists\", () => pm.expect(json.data).to.have.property(\"email\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " {{token}}"
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/users/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				},
+				"description": "Generated from cURL: curl --location '{{base_url}}/api/users/2' \\\r\n--header 'Authorization: Bearer {{token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "GetInvalidUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 404\", () => pm.response.to.have.status(404));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}"
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/users/23",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"23"
+					]
+				},
+				"description": "Generated from cURL: curl --location '{{base_url}}/api/users/23' \\\r\n--header 'Authorization: Bearer {{token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "ListUsers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"const json = pm.response.json();\r",
+							"pm.test(\"Page number is 2\", () => pm.expect(json.page).to.eql(2));\r",
+							"pm.test(\"Data array exists\", () => pm.expect(json).to.have.property(\"data\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}"
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/users?page=2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --location '{{base_url}}/api/users?page=2' \\\r\n--header 'Authorization: Bearer {{token}}'"
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"const json = pm.response.json();\r",
+							"pm.test(\"updatedAt field\", () => pm.expect(json).to.have.property(\"updatedAt\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}"
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Julian Lamothe\",\r\n    \"job\": \"QA Automation\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/users/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				},
+				"description": "Generated from cURL: curl --location '{{base_url}}/api/users/2' \\\r\n--header 'Content-Type: application/json' \\\r\n--header 'Authorization: Bearer {{token}}' \\\r\n--data '{\r\n    \"name\": \"Julian Lamothe\",\r\n    \"job\": \"QA Lead\"\r\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 204\", () => pm.response.to.have.status(204));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}"
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/users/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				},
+				"description": "Generated from cURL: curl --location --request DELETE '{{base_url}}/api/users/2' \\\r\n--header 'Authorization: Bearer {{token}}'\r\n"
+			},
+			"response": []
+		}
+	]
+}
