@@ -19,13 +19,6 @@ Batería de pruebas que apuntan contra el sitio de prueba https://reqres.in/.
 - La collection está organizada en carpetas lógicas
 - Comienza con LogIn
 
-## 🔧 Variables de Environment
-| Variable | Descripción | Valor Ejemplo |
-|----------|-------------|---------------|
-| `baseUrl` | URL base de la API | 
-| `token` | Token de autenticación |
-
-
 ## 📁 Estructura de la Collection
 - **Auth**: Requests de autenticación
 - **Users**: Operaciones CRUD de usuarios
